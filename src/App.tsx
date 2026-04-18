@@ -419,7 +419,9 @@ export default function App() {
           </div>
           <span className="toggle-icon">{light ? '☀️' : '🌙'}</span>
         </button>
-        <button className="nav-tab add-tab" onClick={() => setShowAdd(true)}>＋</button>
+        {view === 'home' && (
+          <button className="nav-tab add-tab" onClick={() => setShowAdd(true)}>＋</button>
+        )}
       </nav>
 
       <div className="tab-body">
