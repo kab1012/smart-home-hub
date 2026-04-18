@@ -88,6 +88,7 @@ function DeviceCard({ d, onToggle, onFav }: { d: Device; onToggle: (id: string) 
     <div className={`device-card ${d.active ? 'card-active' : 'card-inactive'}`} onClick={() => onToggle(d.id)}>
       <div className="card-header">
         <div className="card-title">
+          {/* name */}
           <h4>{d.name}</h4>
           <div className="card-status">
             {d.category === 'thermostat' ? `${d.temperature}°C` : d.category === 'plug' ? (d.active ? d.energy : '0W') : d.active ? 'On' : 'Off'}
