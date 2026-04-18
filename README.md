@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# Smart Home Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A smart home control dashboard built with React 19, TypeScript, and Vite. Manage devices, rooms, reminders, and themes from a single glassmorphic UI.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Device control** — Toggle 15 devices across 5 rooms (lights, fans, plugs, switches, cameras, locks, thermostats, speakers)
+- **Favorites** — Pin frequently used devices for quick access
+- **Reminders** — Create, prioritize, and schedule home tasks
+- **Theme** — Auto light/dark mode (switches at 08:00 and 18:00) with manual override
+- **Add modal** — UI scaffold for adding new devices, rooms, scenes, and automations
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── types.ts                      # Shared TypeScript types and interfaces
+├── utils/
+│   └── time.ts                   # fmt, greeting, greetIcon, isDayTime
+├── data/
+│   ├── devices.ts                # Seed device inventory (15 devices)
+│   ├── reminders.ts              # Seed reminders (3 entries)
+│   ├── addOptions.ts             # Add-new modal options (10 entries)
+│   └── constants.ts              # Priority colors, weather data, nav tabs
+├── components/
+│   ├── EmptyState.tsx            # Empty placeholder UI
+│   ├── DeviceCard.tsx            # Single device tile with toggle and favorite
+│   ├── CameraCard.tsx            # Read-only camera tile
+│   ├── AddModal.tsx              # New device/room/scene modal
+│   ├── ReminderRow.tsx           # Single reminder list item
+│   └── tabs/
+│       ├── HomeTab.tsx           # Dashboard — clock, weather, active devices, reminders
+│       ├── FavoritesTab.tsx      # Grid of pinned devices
+│       ├── RoomTab.tsx           # Devices filtered by room
+│       └── CategoryTab.tsx       # Devices filtered by category
+├── App.tsx                       # Root component — state, nav, tab routing (68 lines)
+├── App.css                       # Styles, theming (CSS variables), animations
+├── main.tsx                      # React root entry point
+└── index.css                     # Global resets and root styles
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **React 19** with hooks (`useState`, `useEffect`)
+- **TypeScript ~6** — strict mode enabled
+- **Vite 8** — fast dev server with HMR
+- **ESLint 9** — TypeScript + React hooks rules
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
+
+```bash
+npm install
+npm run dev
 ```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+## Data Layer
+
+All static data lives in `src/data/` and is imported at the edges that need it. To swap in a real API, replace the seed imports — component interfaces stay the same.
+
+| File | Contents |
+|------|----------|
+| `data/devices.ts` | 15 seed smart home devices |
+| `data/reminders.ts` | 3 seed reminders with today/tomorrow dates |
+| `data/addOptions.ts` | 10 add-new options shown in the modal |
+| `data/constants.ts` | Priority color map, weather snapshot, nav tab list |
