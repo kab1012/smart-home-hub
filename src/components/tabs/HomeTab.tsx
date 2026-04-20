@@ -47,7 +47,7 @@ export default function HomeTab({ devices, reminders, onToggleReminder, onDelete
   return (
     <div className="home-tab">
 
-      <div className="hero-bar">
+      <div className="hero-bar hero-frozen">
         <div className="hero-left">
           <div className="hero-greeting">{greetIcon(h)} {greeting(h)}</div>
           <div className="hero-time">{timeStr}</div>
@@ -59,8 +59,10 @@ export default function HomeTab({ devices, reminders, onToggleReminder, onDelete
             <span className="weather-icon">{WEATHER.icon}</span>
             <span className="weather-temp">{WEATHER.temp}°C</span>
           </div>
-          <div className="weather-sub">{WEATHER.condition}</div>
-          <div className="weather-sub">↑{WEATHER.high}° ↓{WEATHER.low}° · 💧{WEATHER.humidity}%</div>
+          <div className="weather-detail">
+            <span className="weather-sub">{WEATHER.condition}</span>
+            <span className="weather-sub">↑{WEATHER.high}° ↓{WEATHER.low}° · 💧{WEATHER.humidity}%</span>
+          </div>
         </div>
       </div>
 
@@ -80,6 +82,7 @@ export default function HomeTab({ devices, reminders, onToggleReminder, onDelete
         }
       </div>
 
+      <div className="home-scroll">
       <div className="reminders-card">
         <div className="reminders-card-header">
           <span className="home-section-label">Reminders</span>
@@ -128,19 +131,19 @@ export default function HomeTab({ devices, reminders, onToggleReminder, onDelete
           </div>
         )}
 
-        <div className="reminder-scroll">
+        <div className="reminder-grid">
           {reminders.length === 0 && !addOpen && (
             <div className="reminder-empty">🔔 No reminders — tap ＋ to add one</div>
           )}
-          {todayList.length > 0 && <div className="reminder-group-label">Today</div>}
           {todayList.map(r => (
             <ReminderRow key={r.id} r={r} onToggle={onToggleReminder} onDelete={onDeleteReminder} />
           ))}
-          {upcomingList.length > 0 && <div className="reminder-group-label">Upcoming</div>}
           {upcomingList.map(r => (
             <ReminderRow key={r.id} r={r} onToggle={onToggleReminder} onDelete={onDeleteReminder} />
           ))}
         </div>
+      </div>
+
       </div>
     </div>
   )

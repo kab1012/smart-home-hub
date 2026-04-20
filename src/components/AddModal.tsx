@@ -1,12 +1,12 @@
 import type { AddOption } from '../types'
-import { ADD_OPTIONS } from '../data/addOptions'
 
 interface Props {
+  options: AddOption[]
   onClose: () => void
   onAdd: (o: AddOption) => void
 }
 
-export default function AddModal({ onClose, onAdd }: Props) {
+export default function AddModal({ options, onClose, onAdd }: Props) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
@@ -15,7 +15,7 @@ export default function AddModal({ onClose, onAdd }: Props) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="modal-grid">
-          {ADD_OPTIONS.map(opt => (
+          {options.map(opt => (
             <button key={opt.label} className="add-option" onClick={() => onAdd(opt)}>
               <span className="add-opt-icon">{opt.icon}</span>
               <span className="add-opt-label">{opt.label}</span>
