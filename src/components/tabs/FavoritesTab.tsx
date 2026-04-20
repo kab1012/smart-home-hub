@@ -11,7 +11,7 @@ interface Props {
 
 export default function FavoritesTab({ devices, onToggle, onFav }: Props) {
   const favs = devices.filter(d => d.favorite)
-  if (!favs.length) return <EmptyState label="favourites" />
+  if (!favs.length) return <div className="tab-content"><EmptyState label="favourites" /></div>
   return (
     <div className="tab-content">
       <p className="tab-subtitle">{favs.length} pinned devices</p>
