@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+// ── re-enable useEffect when restoring theme toggle ──────────────────────────
+// import { useState, useEffect } from 'react'
 import './App.css'
 import type { Device, Reminder, AddOption } from './types'
 import { seedDevices } from './data/devices'
 import { seedReminders } from './data/reminders'
 import { ADD_OPTIONS } from './data/addOptions'
-import { isDayTime } from './utils/time'
+// ── Theme toggle imports — re-enable when adding light/dark toggle ──────────
+// import { isDayTime } from './utils/time'
 import { VIEW_CONFIG, type View } from './data/views'
 import AddModal from './components/AddModal'
 
@@ -14,13 +17,15 @@ export default function App() {
   const [reminders, setReminders] = useState<Reminder[]>(seedReminders)
   const [showAdd, setShowAdd]     = useState(false)
   const [toast, setToast]         = useState<string | null>(null)
-  const [light, setLight]         = useState(isDayTime)
-
-  useEffect(() => { document.body.classList.toggle('light', light) }, [light])
-  useEffect(() => {
-    const tick = setInterval(() => setLight(isDayTime()), 60_000)
-    return () => clearInterval(tick)
-  }, [])
+  // ── Theme state — re-enable block below when adding light/dark toggle ──────
+  // const [light, setLight] = useState(() => {
+  //   const saved = localStorage.getItem('theme')
+  //   return saved !== null ? saved === 'light' : isDayTime()
+  // })
+  // useEffect(() => {
+  //   document.body.classList.toggle('light', light)
+  //   localStorage.setItem('theme', light ? 'light' : 'dark')
+  // }, [light])
 
   const toggle    = (id: string) => setDevices(prev => prev.map(d => d.id === id ? { ...d, active: !d.active } : d))
   const toggleFav = (id: string) => setDevices(prev => prev.map(d => d.id === id ? { ...d, favorite: !d.favorite } : d))
@@ -62,7 +67,7 @@ export default function App() {
   }
 
   return (
-    <div className={`dashboard ${light ? 'light' : ''}`}>
+    <div className="dashboard"> {/* ── swap with: className={`dashboard ${light ? 'light' : ''}`} when re-enabling theme toggle */}
       <nav className="top-nav">
         {visibleConfig.map(({ id, label, homeStyle, removable }) => (
           removable ? (
@@ -85,12 +90,14 @@ export default function App() {
             </button>
           )
         ))}
+        {/* ── Theme toggle — re-enable when restoring light/dark mode ────────
         <button className="theme-toggle" onClick={() => setLight(v => !v)} aria-label="Toggle theme">
           <div className={`toggle-track ${light ? 'on' : ''}`}>
             <div className="toggle-thumb" />
           </div>
           <span className="toggle-icon">{light ? '☀️' : '🌙'}</span>
         </button>
+        ── */}
         <button
           className="nav-tab add-tab"
           onClick={() => setShowAdd(true)}

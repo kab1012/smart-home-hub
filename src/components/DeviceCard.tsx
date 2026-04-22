@@ -24,7 +24,8 @@ export default function DeviceCard({ d, onToggle, onFav }: Props) {
         <div className="mini-bar-wrap"><div className="mini-bar" style={{ width: `${d.brightness}%` }} /></div>
       )}
       <div className="card-icon">
-        {d.category === 'fan' && d.active ? <span className="fan-spin">{d.icon}</span> : d.icon}
+        {/* Fan icon — static, animation removed. Re-enable by wrapping in <span className="fan-spin"> when active */}
+        {d.icon}
       </div>
       {d.category === 'lock' && <div className="lock-badge">{d.active ? 'Unlocked' : 'Locked'}</div>}
     </div>

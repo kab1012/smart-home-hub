@@ -31,11 +31,11 @@ export interface ViewConfig {
 export const VIEW_CONFIG: ViewConfig[] = [
   {
     id: 'home',
-    label: '🏠 Home',
+    label: 'Home',
     homeStyle: true,
     showAdd: true,
-    render: ({ devices, reminders, onToggleReminder, onDeleteReminder, onAddReminder }) =>
-      <HomeTab devices={devices} reminders={reminders} onToggleReminder={onToggleReminder} onDeleteReminder={onDeleteReminder} onAddReminder={onAddReminder} />,
+    render: ({ devices, reminders, onToggle, onFav, onToggleReminder, onDeleteReminder, onAddReminder }) =>
+      <HomeTab devices={devices} reminders={reminders} onToggle={onToggle} onFav={onFav} onToggleReminder={onToggleReminder} onDeleteReminder={onDeleteReminder} onAddReminder={onAddReminder} />,
   },
   {
     id: 'Favorites',
