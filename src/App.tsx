@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+// ── re-enable useEffect when restoring theme toggle ──────────────────────────
+// import { useState, useEffect } from 'react'
 import './App.css'
-import type { View, Device, Reminder, AddOption } from './types'
+import type { Device, Reminder, AddOption } from './types'
 import { seedDevices } from './data/devices'
 import { seedReminders } from './data/reminders'
-import { TABS } from './data/constants'
-import { isDayTime } from './utils/time'
+import { ADD_OPTIONS } from './data/addOptions'
+// ── Theme toggle imports — re-enable when adding light/dark toggle ──────────
+// import { isDayTime } from './utils/time'
+import { VIEW_CONFIG, type View } from './data/views'
 import AddModal from './components/AddModal'
-import HomeTab from './components/tabs/HomeTab'
-import FavoritesTab from './components/tabs/FavoritesTab'
-import RoomTab from './components/tabs/RoomTab'
-import CategoryTab from './components/tabs/CategoryTab'
 
 export default function App() {
   const [view, setView]           = useState<View>('home')
@@ -17,13 +17,15 @@ export default function App() {
   const [reminders, setReminders] = useState<Reminder[]>(seedReminders)
   const [showAdd, setShowAdd]     = useState(false)
   const [toast, setToast]         = useState<string | null>(null)
-  const [light, setLight]         = useState(isDayTime)
-
-  useEffect(() => { document.body.classList.toggle('light', light) }, [light])
-  useEffect(() => {
-    const tick = setInterval(() => setLight(isDayTime()), 60_000)
-    return () => clearInterval(tick)
-  }, [])
+  // ── Theme state — re-enable block below when adding light/dark toggle ──────
+  // const [light, setLight] = useState(() => {
+  //   const saved = localStorage.getItem('theme')
+  //   return saved !== null ? saved === 'light' : isDayTime()
+  // })
+  // useEffect(() => {
+  //   document.body.classList.toggle('light', light)
+  //   localStorage.setItem('theme', light ? 'light' : 'dark')
+  // }, [light])
 
   const toggle    = (id: string) => setDevices(prev => prev.map(d => d.id === id ? { ...d, active: !d.active } : d))
   const toggleFav = (id: string) => setDevices(prev => prev.map(d => d.id === id ? { ...d, favorite: !d.favorite } : d))
@@ -37,40 +39,79 @@ export default function App() {
 
   const flash = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500) }
 
-  const handleAdd = (opt: AddOption) => { setShowAdd(false); flash(`"${opt.label}" setup coming soon!`) }
+  const defaultRooms = VIEW_CONFIG.filter(v => v.removable).map(v => v.id)
+  const [activeRooms, setActiveRooms] = useState<View[]>(defaultRooms)
+
+  const removeRoom = (id: View) => {
+    setActiveRooms(prev => prev.filter(r => r !== id))
+    if (view === id) setView('home')
+  }
+
+  const visibleConfig = VIEW_CONFIG.filter(v => !v.removable || activeRooms.includes(v.id))
+
+  const roomOptions: AddOption[] = VIEW_CONFIG
+    .filter(v => v.addOption && !activeRooms.includes(v.id))
+    .map(v => ({ label: v.label, icon: v.addOption!.icon, description: v.addOption!.description, category: 'room', navigateTo: v.id }))
+
+  const allAddOptions = [...roomOptions, ...ADD_OPTIONS.filter(o => o.category !== 'room')]
+
+  const handleAdd = (opt: AddOption) => {
+    setShowAdd(false)
+    if (opt.navigateTo) {
+      const id = opt.navigateTo as View
+      setActiveRooms(prev => prev.includes(id) ? prev : [...prev, id])
+      setView(id)
+      return
+    }
+    flash(`"${opt.label}" setup coming soon!`)
+  }
 
   return (
-    <div className={`dashboard ${light ? 'light' : ''}`}>
+    <div className="dashboard"> {/* ── swap with: className={`dashboard ${light ? 'light' : ''}`} when re-enabling theme toggle */}
       <nav className="top-nav">
-        <button className={`nav-tab home-tab ${view === 'home' ? 'home-tab-active' : ''}`} onClick={() => setView('home')}>
-          🏠 Home
-        </button>
-        {TABS.map(tab => (
-          <button key={tab} className={`nav-tab ${view === tab ? 'tab-active' : 'tab-inactive'}`} onClick={() => setView(tab)}>
-            {tab}
-          </button>
+        {visibleConfig.map(({ id, label, homeStyle, removable }) => (
+          removable ? (
+            <div key={id} className="nav-tab-group">
+              <button
+                className={`nav-tab ${view === id ? 'tab-active' : 'tab-inactive'}`}
+                onClick={() => setView(id)}
+              >
+                {label}
+              </button>
+              <button className="nav-tab-remove" onClick={() => removeRoom(id)} aria-label={`Remove ${label}`}>✕</button>
+            </div>
+          ) : (
+            <button
+              key={id}
+              className={`nav-tab ${homeStyle ? 'home-tab' : ''} ${view === id ? (homeStyle ? 'home-tab-active' : 'tab-active') : 'tab-inactive'}`}
+              onClick={() => setView(id)}
+            >
+              {label}
+            </button>
+          )
         ))}
+        {/* ── Theme toggle — re-enable when restoring light/dark mode ────────
         <button className="theme-toggle" onClick={() => setLight(v => !v)} aria-label="Toggle theme">
           <div className={`toggle-track ${light ? 'on' : ''}`}>
             <div className="toggle-thumb" />
           </div>
           <span className="toggle-icon">{light ? '☀️' : '🌙'}</span>
         </button>
-        {view === 'home' && (
-          <button className="nav-tab add-tab" onClick={() => setShowAdd(true)}>＋</button>
-        )}
+        ── */}
+        <button
+          className="nav-tab add-tab"
+          onClick={() => setShowAdd(true)}
+          style={{ visibility: visibleConfig.find(v => v.id === view)?.showAdd ? 'visible' : 'hidden' }}
+        >＋</button>
       </nav>
 
       <div className="tab-body">
-        {view === 'home'        && <HomeTab devices={devices} reminders={reminders} onToggleReminder={toggleReminder} onDeleteReminder={deleteReminder} onAddReminder={addReminder} />}
-        {view === 'Favorites'   && <FavoritesTab devices={devices} onToggle={toggle} onFav={toggleFav} />}
-        {view === 'Living Room' && <RoomTab room="Living Room" devices={devices} onToggle={toggle} onFav={toggleFav} />}
-        {view === 'Lights'      && <CategoryTab category="light"  label="lights"   devices={devices} onToggle={toggle} onFav={toggleFav} />}
-        {view === 'Plugs'       && <CategoryTab category="plug"   label="plugs"    devices={devices} onToggle={toggle} onFav={toggleFav} />}
-        {view === 'Switches'    && <CategoryTab category="switch" label="switches" devices={devices} onToggle={toggle} onFav={toggleFav} />}
+        {visibleConfig.map(({ id, render }) =>
+          view === id && render({ devices, reminders, onToggle: toggle, onFav: toggleFav, onToggleReminder: toggleReminder, onDeleteReminder: deleteReminder, onAddReminder: addReminder })
+        )}
       </div>
 
-      {showAdd && <AddModal onClose={() => setShowAdd(false)} onAdd={handleAdd} />}
+      {showAdd && <AddModal options={allAddOptions} onClose={() => setShowAdd(false)} onAdd={handleAdd} />}
       {toast && <div className="toast">{toast}</div>}
     </div>
   )

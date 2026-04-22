@@ -1,6 +1,5 @@
 export type Category = 'light' | 'fan' | 'vacuum' | 'camera' | 'plug' | 'switch' | 'thermostat' | 'lock' | 'speaker'
 export type Room     = 'Living Room' | 'Bedroom' | 'Kitchen' | 'Office' | 'Garden'
-export type View     = 'home' | 'Favorites' | 'Living Room' | 'Lights' | 'Plugs' | 'Switches'
 export type Priority = 'low' | 'medium' | 'high'
 
 export interface Device {
@@ -17,4 +16,5 @@ export interface Reminder {
 export interface AddOption {
   label: string; icon: string; description: string
   category: Category | 'room' | 'scene' | 'automation'
+  navigateTo?: string
 }
