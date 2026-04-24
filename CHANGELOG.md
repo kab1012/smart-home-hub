@@ -27,6 +27,26 @@
 - Fan spin animation — CSS `@keyframes spin` and `.fan-spin` class commented out; `DeviceCard.tsx` has instructions to re-wrap icon in `<span className="fan-spin">`.
 - Reminders section in HomeTab — full form and list commented with `{false && ...}`; CSS also commented.
 
+## [2026-04-23]
+
+### Added
+- `.nav-row` wrapper — `+` button moved outside `<nav>` and sits as a sibling; nav bar now uses `width: fit-content` centered via `justify-content: center` on the row.
+- Green separator (`border-left: 1px solid rgba(34,197,94,0.3)`) between nav tabs; first tab has no left border.
+- `overflow: clip` on `.device-grid` — prevents `translateY` hover lift on device cards from triggering a scrollbar in the scroll container.
+
+### Changed
+- Active tab dot indicator replaced with bold (`font-weight: bold`) + full opacity (`opacity: 1`) on the active tab; all tabs share the same `#caf5f7` color and weight, only opacity differs (0.4 inactive → 1 active), eliminating layout shift on click.
+- Nav tabs moved into a unified straight box (`.top-nav`) with subtle glass background and border; individual tab pill borders removed.
+- `.home-tab` content-area CSS scoped to `.tab-body .home-tab` — fixes class collision that caused the Home nav button to inherit `flex: 1` and stretch across the full nav bar.
+- `translateY(-2px)` device card hover reduced to `translateY(-1px)` for a subtler lift.
+- `.home-section-row` given `margin-top: -4px` to pull "Active" label closer to the date.
+- "Active" label indented `2.5px` via `padding-left`.
+
+### Fixed
+- Home tab nav button stretching to fill entire nav bar — caused by `.home-tab` CSS rule leaking `flex: 1` onto the button element.
+- Extra whitespace on left of first tab and right of last tab — switched separator from `border-right` to `border-left` and removed it from the first child.
+- `+` button not vertically centered in nav bar — was `position: absolute` without `top`; now sits in normal flow as a flex sibling in `.nav-row`.
+
 ## [Unreleased]
 
 ### Added
