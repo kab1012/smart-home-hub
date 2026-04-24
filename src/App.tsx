@@ -68,28 +68,30 @@ export default function App() {
 
   return (
     <div className="dashboard"> {/* ── swap with: className={`dashboard ${light ? 'light' : ''}`} when re-enabling theme toggle */}
-      <nav className="top-nav">
-        {visibleConfig.map(({ id, label, homeStyle, removable }) => (
-          removable ? (
-            <div key={id} className="nav-tab-group">
+      <div className="nav-row">
+        <nav className="top-nav">
+          {visibleConfig.map(({ id, label, homeStyle, removable }) => (
+            removable ? (
+              <div key={id} className="nav-tab-group">
+                <button
+                  className={`nav-tab ${view === id ? 'tab-active' : 'tab-inactive'}`}
+                  onClick={() => setView(id)}
+                >
+                  {label}
+                </button>
+                <button className="nav-tab-remove" onClick={() => removeRoom(id)} aria-label={`Remove ${label}`}>✕</button>
+              </div>
+            ) : (
               <button
-                className={`nav-tab ${view === id ? 'tab-active' : 'tab-inactive'}`}
+                key={id}
+                className={`nav-tab ${homeStyle ? 'home-tab' : ''} ${view === id ? (homeStyle ? 'home-tab-active' : 'tab-active') : 'tab-inactive'}`}
                 onClick={() => setView(id)}
               >
                 {label}
               </button>
-              <button className="nav-tab-remove" onClick={() => removeRoom(id)} aria-label={`Remove ${label}`}>✕</button>
-            </div>
-          ) : (
-            <button
-              key={id}
-              className={`nav-tab ${homeStyle ? 'home-tab' : ''} ${view === id ? (homeStyle ? 'home-tab-active' : 'tab-active') : 'tab-inactive'}`}
-              onClick={() => setView(id)}
-            >
-              {label}
-            </button>
-          )
-        ))}
+            )
+          ))}
+        </nav>
         {/* ── Theme toggle — re-enable when restoring light/dark mode ────────
         <button className="theme-toggle" onClick={() => setLight(v => !v)} aria-label="Toggle theme">
           <div className={`toggle-track ${light ? 'on' : ''}`}>
@@ -103,7 +105,7 @@ export default function App() {
           onClick={() => setShowAdd(true)}
           style={{ visibility: visibleConfig.find(v => v.id === view)?.showAdd ? 'visible' : 'hidden' }}
         >＋</button>
-      </nav>
+      </div>
 
       <div className="tab-body">
         {visibleConfig.map(({ id, render }) =>
