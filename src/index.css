@@ -3,7 +3,8 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a001f 0%, #0d1040 45%, #001a2e 100%); transition: background 0.8s ease;
+  /* background: linear-gradient(135deg, #0a001f 0%, #0d1040 45%, #001a2e 100%); transition: background 0.8s ease; */
+  background: #0A001F;
   transition: background 1s ease;
 }
 body.light {
